@@ -16,28 +16,34 @@ public class SqlMusicRepository : IMusicRepository
     public SqlMusicRepository(MusicContext musicContext)
     {
         this.musicContext = musicContext;
-        musicContext.Database.EnsureCreated();
     }
 
-    public void AddMusic(Music music)
+    public async Task<int> AddMusic(Music? music)
     {
-        musicContext.Add(music);
-        musicContext.SaveChanges();
+        if (music == null) return -1;
+
+        await musicContext.AddAsync(music);
+        return await musicContext.SaveChangesAsync();
     }
 
-    public void DeleteMusic(Music music)
+    public async Task<int> DeleteMusic(Music? music)
     {
-        musicContext.Remove(music);
-        musicContext.SaveChanges();
+        if (music == null) return -1;
+        Music? deletedMusic = musicContext.MusicDatabase.Where(m => m.ArtistName == music.ArtistName && m.Title == music.Title).ToList().FirstOrDefault();
+        if (deletedMusic != null)
+        {
+            musicContext.Remove(deletedMusic);
+        }
+        return await musicContext.SaveChangesAsync();
     }
 
-    public IEnumerable<Music> GetAllMusics()
+    public async Task<IEnumerable<Music>> GetAllMusics()
     {
-        return musicContext.MusicDatabase.ToList();
+        return await musicContext.MusicDatabase.ToListAsync();
     }
 
-    public IEnumerable<Music> SearchMusic(string request)
+    public async Task<IEnumerable<Music>> SearchMusic(string? request)
     {
-        return musicContext.MusicDatabase.Where(music => music.ArtistName == request || music.Title == request).ToList();
+        return await musicContext.MusicDatabase.Where(music => music.ArtistName == request || music.Title == request).ToListAsync();
     }
 }

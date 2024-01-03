@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Lab2_Var7.Domain.Repository;
+using Lab2_Var7.Infrastructure.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,11 +12,13 @@ namespace Lab2_Var7.Infrastructure.SQLiteDatabase.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddMusicCatalogContext(this IServiceCollection services,
-        string relativePath = "..")
+    public static IServiceCollection AddMusicCatalogContext(this IServiceCollection services)
     {
-        string dbFile = Path.Combine(relativePath, "mc.db");
-        services.AddDbContext<MusicContext>(op => op.UseSqlite($"Data Source={dbFile}"));
+        string DbPath = Directory.GetCurrentDirectory() + "\\Database\\music.db";
+        Console.WriteLine(DbPath);
+        services.AddDbContext<MusicContext>(op => op.UseSqlite($"Data Source={DbPath}"));
+
+        services.AddScoped<IMusicRepository, SqlMusicRepository>();
 
         return services;
     }

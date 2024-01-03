@@ -1,24 +1,24 @@
 ﻿using Lab2_Var7.Domain.Models;
+using Lab2_Var7.Domain.Repository;
 using Microsoft.AspNetCore.Mvc;
-using WebService.Repository;
 
 namespace WebService.Controllers;
 
 [Route("api/musics")]
 [ApiController]
-public class MusicCatalogController : ControllerBase
+public class MusicController : ControllerBase
 {
-    private readonly IMusicCatalogRepository musicCatalogRepository;
-    public MusicCatalogController(IMusicCatalogRepository musicCatalogRepository)
+    private readonly IMusicRepository musicRepository;
+    public MusicController(IMusicRepository musicRepository)
     {
-        this.musicCatalogRepository = musicCatalogRepository;
+        this.musicRepository = musicRepository;
     }
 
     // POST: api/music/add
     [HttpPost("add")]
     public async Task<IActionResult> AddMusic([FromBody] Music music)
     {
-        int result = await musicCatalogRepository.AddMusic(music);
+        int result = await musicRepository.AddMusic(music);
         switch (result)
         {
             case -1:
@@ -37,7 +37,7 @@ public class MusicCatalogController : ControllerBase
     [HttpPost("delete")]
     public async Task<IActionResult> DeleteMusic([FromBody] Music music)
     {
-        int result = await musicCatalogRepository.DeleteMusic(music);
+        int result = await musicRepository.DeleteMusic(music);
         switch (result)
         {
             case -1:
@@ -57,9 +57,9 @@ public class MusicCatalogController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return await musicCatalogRepository.GetAllMusics();
+            return await musicRepository.GetAllMusics();
         }
 
-        return await musicCatalogRepository.SearchMusic(query);
+        return await musicRepository.SearchMusic(query);
     }
 }

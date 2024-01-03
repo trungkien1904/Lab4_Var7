@@ -9,8 +9,8 @@ namespace Lab2_Var7.Domain.Repository;
 
 public interface IMusicRepository
 {
-    void AddMusic(Music music);
-    void DeleteMusic(Music music);
-    IEnumerable<Music> SearchMusic(string request);
-    IEnumerable<Music> GetAllMusics();
+    Task<int> AddMusic(Music? music);
+    Task<int> DeleteMusic(Music? music);
+    Task<IEnumerable<Music>> SearchMusic(string? request);
+    Task<IEnumerable<Music>> GetAllMusics();
 }
